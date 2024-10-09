@@ -2,6 +2,14 @@
 
 This is the official firmware for our DragonRailway Project. **TrainControl_BLE** allows wireless control of a DragonRailway locomotives via Bluetooth (BLE).
 
+## Features
+
+- Compatible with upto 2 motor drivers and 6 leds.
+- Realistic LED fade on/off.
+
+- BLE remote control from Android/IOS device to locomotive control board.
+- Intuitive App interface designed in RemoteXY.
+
 ## Hardware
 
 ### 1) TRACKLINK (recommended)
@@ -23,7 +31,10 @@ This project will still work with standard dev boards. However, you will need to
 
 ## Software
 
-- RemoteXY app - https://remotexy.com/en/download/
+- RemoteXY app Android/IOS - https://remotexy.com/en/download/
 - VSCode with PlatformIO extension
     - Download VScode https://code.visualstudio.com/
-    - Install PlatformIO https://marketplace.visualstudio.com/items?itemName=platformio.platformio-ide
+    - Install PlatformIO directly from VSCode
+
+## License
+2024 DragonRailway - 100% open source
