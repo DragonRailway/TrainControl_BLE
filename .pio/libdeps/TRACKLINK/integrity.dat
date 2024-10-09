@@ -1,2 +1,4 @@
 remotexy/RemoteXY@^3.1.14
 bxparks/AceRoutine@^1.5.1
+madhephaestus/ESP32Servo@^3.0.5
+dlloydev/ESP32 ESP32S2 AnalogWrite@^5.0.2
