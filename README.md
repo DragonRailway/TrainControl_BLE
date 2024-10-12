@@ -10,6 +10,11 @@ This is the official firmware for our DragonRailway Project. **TrainControl_BLE*
 - BLE remote control from Android/IOS device to locomotive control board.
 - Intuitive App interface designed in RemoteXY.
 
+## Screenshots
+
+![TrainControl-Simple-GUI](photos/TrainControl-GUI-Screenshot-simple.png)
+![TrainControl-Extended-GUI](photos/TrainControl-GUI-Screenshot-extended.png)
+
 ## Hardware
 
 ### 1) TRACKLINK (recommended)
