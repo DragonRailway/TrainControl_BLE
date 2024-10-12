@@ -1,6 +1,6 @@
 # TrainControl_BLE
 
-This is the official firmware for our DragonRailway Project. **TrainControl_BLE** allows wireless control of a DragonRailway locomotives via Bluetooth (BLE).
+This is the official firmware for our DragonRailway Project. **TrainControl_BLE** allows wireless control of a DragonRailway locomotive via Bluetooth (BLE).
 
 ## Features
 
