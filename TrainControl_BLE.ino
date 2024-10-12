@@ -6,17 +6,21 @@ Pwm pwm = Pwm();
 #include <AceRoutine.h>  //  https://github.com/bxparks/AceRoutine
 using namespace ace_routine;
 
+// RemoteXY connection settings
+#define REMOTEXY_BLUETOOTH_NAME "Dragon Railway Locomotive"  //  Locomotive Model Name
+#define REMOTEXY_ACCESS_PASSWORD "1234"                      //  Bluetooth Access Password
+
 //  https://github.com/RemoteXY/RemoteXY-Arduino-library
 #define REMOTEXY_MODE__ESP32CORE_BLE
 #include <BLEDevice.h>
 #include <RemoteXY.h>
 
-// RemoteXY connection settings
-#define REMOTEXY_BLUETOOTH_NAME "Dragon Railway Locomotive"  //  Locomotive Model Name
-#define REMOTEXY_ACCESS_PASSWORD "1234"                      //  Bluetooth Access Password
+// Uncomment this line if you are using a custom board
+// Set the pins for your custom board in this file
+// #include <custom_pins.h>
 
-//  Uncomment this line if your model has more than 2 leds
-//  #define EXTENDED_LED_CONTROL
+// Uncomment this line if your model has more than 2 leds
+// #define EXTENDED_LED_CONTROL
 
 // Uncomment this line if you use more than 6 leds
 // #define FREE_UP_LEDC
@@ -28,7 +32,7 @@ using namespace ace_routine;
 // #define INVERT_MOTOR_A
 // #define INVERT_MOTOR_B
 
-// Voltage sense for low battery warning, adjust for your voltage divider
+//  Voltage sense for low battery warning, adjust for your voltage divider
 #define VSCALE 4.2
 
 // The motor will be silent at frequencies above 20,000Hz
