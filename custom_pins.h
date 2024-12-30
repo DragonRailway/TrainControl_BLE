@@ -20,6 +20,7 @@
 #define L6 21
 
 #define VSENS 4
+#define VSCALE 4.2
 
 #define LED_FREQ 10000
 #define LED_RES 10

@@ -31,9 +31,6 @@ using namespace ace_routine;
 // #define INVERT_MOTOR_A
 // #define INVERT_MOTOR_B
 
-//  Voltage sense for low battery warning, adjust for your voltage divider
-#define VSCALE 4.2
-
 // The motor will be silent at frequencies above 20,000Hz
 // Set the minimum power which the locomotive starts to move
 // This is usually higher with higher frequencies
