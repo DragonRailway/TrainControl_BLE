@@ -41,7 +41,7 @@ float batteryLow = 3.3;      //  warning voltage
 float batteryCritical = 3.0; //  cell cutoff voltage
 uint8_t cellCount = 0;       //  0 for auto detection
 
-// Set the maximum power for lede in percentage
+// Set the maximum power for led in percentage
 uint16_t headlightMaxPower = 100;
 uint16_t taillightMaxPower = 100;
 uint16_t cablightMaxPower = 100;
