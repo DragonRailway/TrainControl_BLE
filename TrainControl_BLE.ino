@@ -1,52 +1,19 @@
-
-
 #include <Arduino.h>
-#include <pwmWrite.h> //  https://github.com/Dlloydev/ESP32-ESP32S2-AnalogWrite
-Pwm pwm = Pwm();
 #include <AceRoutine.h> //  https://github.com/bxparks/AceRoutine
 using namespace ace_routine;
-
-// RemoteXY connection settings
-#define REMOTEXY_BLUETOOTH_NAME "Dragon Railway Locomotive" //  Locomotive Model Name
-#define REMOTEXY_ACCESS_PASSWORD "1234"                     //  Bluetooth Access Password
 
 //  https://github.com/RemoteXY/RemoteXY-Arduino-library
 #define REMOTEXY_MODE__ESP32CORE_BLE
 #include <BLEDevice.h>
 #include <RemoteXY.h>
 
+//#include "locomotive_configs/ES44C4.h"
+//#include "locomotive_configs/GP60.h"
+#include "locomotive_configs/custom-config.h"
+//#include "locomotive_configs/ESP32-DIY-BOARD.h"
+
 // Set the pins for your DIY board in this file
 #include <custom_pins.h>
-
-// Uncomment this line if your model has more than 2 leds
-// #define EXTENDED_LED_CONTROL
-
-// Uncomment this line if you use more than 6 leds
-// #define FREE_UP_LEDC
-
-// Uncomment this line if you use 2 motor drivers MA & MB
-// #define DUAL_MOTOR_DRIVER
-
-// Uncomment if you want to invert motor direction
-// #define INVERT_MOTOR_A
-// #define INVERT_MOTOR_B
-
-// The motor will be silent at frequencies above 20,000Hz
-// Set the minimum power which the locomotive starts to move
-// This is usually higher with higher frequencies
-int8_t minPower = 50; //  in percentage
-
-float vBat = 0.00;
-float batteryLow = 3.3;      //  warning voltage
-float batteryCritical = 3.0; //  cell cutoff voltage
-uint8_t cellCount = 0;       //  0 for auto detection
-
-// Set the maximum power for led in percentage
-uint16_t headlightMaxPower = 100;
-uint16_t taillightMaxPower = 100;
-uint16_t cablightMaxPower = 100;
-uint16_t walklightMaxPower = 100;
-uint16_t ditchlightMaxPower = 100;
 
 // Variables to keep track of led brightness
 int16_t headlightBrightness = 0;
@@ -158,7 +125,7 @@ int16_t fade(uint8_t pinNumber, bool ledState, int16_t ledBrightness, int16_t ma
   { // if brightness did not change
     if (prevBrightness != ledBrightness)
     {
-      pwm.detach(pinNumber); // this frees up a ledc channel
+      ledcDetach(pinNumber); // this frees up a ledc channel
       pinMode(pinNumber, OUTPUT);
       digitalWrite(pinNumber, ledState);
     }
@@ -166,10 +133,10 @@ int16_t fade(uint8_t pinNumber, bool ledState, int16_t ledBrightness, int16_t ma
   }
   else
   {
-    pwm.write(pinNumber, ledBrightness, LED_FREQ, LED_RES); // write brightness to the led pin
+    ledcWrite(pinNumber, ledBrightness); // write brightness to the led pin
   }
 #else
-  pwm.write(pinNumber, ledBrightness, LED_FREQ, LED_RES); // write brightness to the led pin
+ledcWrite(pinNumber, ledBrightness); // write brightness to the led pin
 #endif
 
   return ledBrightness; // return the new brightness value
@@ -195,25 +162,25 @@ int16_t alternateFade(uint8_t pinNumber1, uint8_t pinNumber2, bool ledState, int
     }
     ledBrightness = ledBrightness + alternateBrightness;
     ledBrightness = constrain(ledBrightness, minPwnDuty, maxPwmDuty); // limit pwm duty range
-    pwm.write(pinNumber1, ledBrightness, LED_FREQ, LED_RES);          // write brightness to pin 1
+    ledcWrite(pinNumber1, ledBrightness);          // write brightness to pin 1
     if (startUpState == 1)
     {
-      pwm.write(pinNumber2, maxPwmDuty - ledBrightness, LED_FREQ, LED_RES); // write inverse brightness to pin 2}
+      ledcWrite(pinNumber2, maxPwmDuty - ledBrightness); // write inverse brightness to pin 2}
     }
   }
   else
   {
     startUpState = 0;
 #ifdef FREE_UP_LEDC
-    pwm.detach(pinNumber1);      // detach pin 1 from Pwm
-    pwm.detach(pinNumber2);      // detach pin 2 from Pwm
+    ledcDetach(pinNumber1);      // detach pin 1 from Pwm
+    ledcDetach(pinNumber2);      // detach pin 2 from Pwm
     pinMode(pinNumber1, OUTPUT); // set pin 1 to output
     pinMode(pinNumber2, OUTPUT); // set pin 2 to output
     digitalWrite(pinNumber1, 0); // turn off pin 1
     digitalWrite(pinNumber2, 0); // turn off pin 2
 #else
-    pwm.write(pinNumber1, 0, LED_FREQ, LED_RES); // write 0 to pin 1
-    pwm.write(pinNumber2, 0, LED_FREQ, LED_RES); // write 0 to pin 2
+ledcWrite(pinNumber1, 0); // write 0 to pin 1
+ledcWrite(pinNumber2, 0); // write 0 to pin 2
 #endif
   }
   return ledBrightness; // return new brightness value
@@ -230,20 +197,20 @@ void runMotor(uint8_t pwmPin1, uint8_t pwmPin2, int16_t speed, bool direction)
     switch (direction)
     {
     case 0:
-      pwm.write(pwmPin1, 0);
-      pwm.write(pwmPin2, speed);
+      ledcWrite(pwmPin1, 0);
+      ledcWrite(pwmPin2, speed);
       break;
     case 1:
-      pwm.write(pwmPin1, speed);
-      pwm.write(pwmPin2, 0);
+      ledcWrite(pwmPin1, speed);
+      ledcWrite(pwmPin2, 0);
       break;
     }
   }
   else
   {
     digitalWrite(DRV_EN, LOW);
-    pwm.write(pwmPin1, 0);
-    pwm.write(pwmPin2, 0);
+    ledcWrite(pwmPin1, 0);
+    ledcWrite(pwmPin2, 0);
   }
 }
 
@@ -282,36 +249,32 @@ void setup()
   cablightMaxPower = map(cablightMaxPower, 0, 100, 0, ledMaxPwm);
   walklightMaxPower = map(walklightMaxPower, 0, 100, 0, ledMaxPwm);
   ditchlightMaxPower = map(ditchlightMaxPower, 0, 100, 0, ledMaxPwm);
-  pwm.attach(L1, 2);
-  pwm.attach(L2, 3);
-  pwm.attach(L3, 4);
-  pwm.attach(L4, 5);
-  pwm.attach(L5, 6);
-  pwm.attach(L6, 7);
+  ledcAttachChannel(L1, LED_FREQ, LED_RES,2);
+  ledcAttachChannel(L2, LED_FREQ, LED_RES,3);
+  ledcAttachChannel(L3, LED_FREQ, LED_RES,4);
+  ledcAttachChannel(L4, LED_FREQ, LED_RES,5);
+  ledcAttachChannel(L5, LED_FREQ, LED_RES,6);
+  ledcAttachChannel(L6, LED_FREQ, LED_RES,7);
 #endif
 
 //  H bridge pins
 #ifndef INVERT_MOTOR_A
-  pwm.attach(DRV_MA1, 0); //  set ledc channel
-  pwm.attach(DRV_MA2, 1); //  set ledc channel
+  ledcAttachChannel(DRV_MA1, DRV_FREQ, DRV_RES,0); //  set ledc channel
+  ledcAttachChannel(DRV_MA2, DRV_FREQ, DRV_RES,1); //  set ledc channel
 #else
-  pwm.attach(DRV_MA1, 1); //  set ledc channel
-  pwm.attach(DRV_MA2, 0); //  set ledc channel
+  ledcAttachChannel(DRV_MA1, DRV_FREQ, DRV_RES,1); //  set ledc channel
+  ledcAttachChannel(DRV_MA2, DRV_FREQ, DRV_RES,0); //  set ledc channel
 #endif
 #ifdef DUAL_MOTOR_DRIVER
 #ifndef INVERT_MOTOR_B
-  pwm.attach(DRV_MB1, 0); //  use same channel as motor 1
-  pwm.attach(DRV_MB2, 1); //  use same channel as motor 1
+ledcAttachChannel(DRV_MB1, DRV_FREQ, DRV_RES,0); //  use same channel as motor 1
+ledcAttachChannel(DRV_MB2, DRV_FREQ, DRV_RES,1); //  use same channel as motor 1
 #else
-  pwm.attach(DRV_MB1, 1); //  use same channel as motor 1
-  pwm.attach(DRV_MB2, 0); //  use same channel as motor 1
+ledcAttachChannel(DRV_MB1, DRV_FREQ, DRV_RES,1); //  use same channel as motor 1
+ledcAttachChannel(DRV_MB2, DRV_FREQ, DRV_RES,0); //  use same channel as motor 1
 #endif
 #endif
 
-  pwm.setFrequency(DRV_MA1, DRV_FREQ); //  set pwm frequency
-  pwm.setFrequency(DRV_MA2, DRV_FREQ);
-  pwm.setResolution(DRV_MA1, DRV_RES); //  set pwm resolution
-  pwm.setResolution(DRV_MA2, DRV_RES);
   pinMode(DRV_EN, OUTPUT);   //  set enable pin as output
   digitalWrite(DRV_EN, LOW); //  initialize driver disabled at startup
 
