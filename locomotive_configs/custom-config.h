@@ -1,7 +1,7 @@
 
 // RemoteXY connection settings
-#define REMOTEXY_BLUETOOTH_NAME "Dragon Railway Locomotive" //  Locomotive Model Name
-#define REMOTEXY_ACCESS_PASSWORD "1234"                     //  Bluetooth Access Password
+#define REMOTEXY_BLUETOOTH_NAME "Dragon Locomotive"  //  Locomotive Model Name
+#define REMOTEXY_ACCESS_PASSWORD "1234"              //  Bluetooth Access Password
 
 // Uncomment this line if your model has more than 2 leds
 // #define EXTENDED_LED_CONTROL
@@ -19,12 +19,12 @@
 // The motor will be silent at frequencies above 20,000Hz
 // Set the minimum power in which the locomotive starts to move
 // This is usually higher with higher frequencies
-int8_t minPower = 50; //  in percentage
+int8_t minPower = 50;  //  in percentage
 
 float vBat = 0.00;
-float batteryLow = 3.3;      //  warning voltage
-float batteryCritical = 3.0; //  cell cutoff voltage
-uint8_t cellCount = 0;       //  0 for auto detection
+float batteryLow = 3.3;       //  warning voltage
+float batteryCritical = 3.0;  //  cell cutoff voltage
+uint8_t cellCount = 0;        //  0 for auto detection
 
 // Set the maximum power for led in percentage
 uint16_t headlightMaxPower = 100;
