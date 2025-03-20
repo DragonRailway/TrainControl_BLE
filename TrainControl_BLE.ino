@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <AceRoutine.h> //  https://github.com/bxparks/AceRoutine
+#include <AceRoutine.h>  //  https://github.com/bxparks/AceRoutine
 using namespace ace_routine;
 
 //  https://github.com/RemoteXY/RemoteXY-Arduino-library
@@ -22,14 +22,13 @@ int16_t cablightBrightness = 0;
 int16_t walklightBrightness = 0;
 int16_t ditchlightBrightness = 0;
 
-bool lightState[5] = {0};
-enum LedIndex
-{
-  HEADLIGHT = 0, //  L1
-  TAILLIGHT = 1, //  L2
-  CABLIGHT = 2,  //  L3
-  WALKLIGHT = 3, //  L4
-  DITCHLIGHT = 4 //  L5,L6
+bool lightState[5] = { 0 };
+enum LedIndex {
+  HEADLIGHT = 0,  //  L1
+  TAILLIGHT = 1,  //  L2
+  CABLIGHT = 2,   //  L3
+  WALKLIGHT = 3,  //  L4
+  DITCHLIGHT = 4  //  L5,L6
 };
 
 uint16_t ledMaxPwm = 0;
@@ -47,38 +46,11 @@ uint16_t motorMaxPwm = 0;
 
 #ifdef EXTENDED_LED_CONTROL
 
-uint8_t RemoteXY_CONF[] = // 76 bytes
-    {255, 4, 0, 17, 0, 69, 0, 19, 0, 0, 0, 0, 24, 1, 126, 200, 1, 1, 5, 0,
-     4, 78, 23, 19, 100, 0, 79, 111, 2, 64, 138, 46, 20, 1, 172, 79, 16, 31, 62, 0,
-     60, 0, 10, 20, 134, 27, 27, 48, 78, 26, 31, 79, 78, 0, 31, 79, 70, 70, 0, 3,
-     24, 31, 20, 89, 5, 78, 26, 67, 0, 1, 126, 16, 69, 31, 186, 17};
-
-// this structure defines all the variables and events of your control interface
-struct
-{
-
-  // input variables
-  int8_t speed;   // from 0 to 100
-  uint8_t dir;    // =1 if switch ON and =0 if OFF
-  uint8_t toggle; // =1 if state is ON, else =0
-  uint8_t led_id; // from 0 to 5
-
-  // output variables
-  char string[17]; // string UTF8 end zero
-
-  // other variable
-  uint8_t connect_flag; // =1 if wire connected, else =0
-
-} RemoteXY;
-
-#else
-
-uint8_t RemoteXY_CONF[] = // 85 bytes
-    {255, 4, 0, 17, 0, 78, 0, 19, 0, 0, 0, 0, 24, 1, 126, 200, 1, 1, 5, 0,
-     4, 78, 29, 19, 100, 0, 79, 111, 2, 36, 143, 55, 21, 1, 172, 79, 16, 31, 62, 0,
-     60, 0, 10, 24, 92, 28, 28, 48, 78, 26, 31, 79, 78, 0, 31, 79, 70, 70, 0, 10,
-     24, 45, 28, 28, 48, 78, 26, 31, 79, 78, 0, 31, 79, 70, 70, 0, 67, 0, 10, 126,
-     15, 69, 31, 186, 17};
+uint8_t RemoteXY_CONF[] =  // 76 bytes
+  { 255, 4, 0, 17, 0, 69, 0, 19, 0, 0, 0, 0, 24, 1, 126, 200, 1, 1, 5, 0,
+    4, 78, 23, 19, 100, 0, 79, 111, 2, 64, 138, 46, 20, 1, 172, 79, 16, 31, 62, 0,
+    60, 0, 10, 20, 134, 27, 27, 48, 78, 26, 31, 79, 78, 0, 31, 79, 70, 70, 0, 3,
+    24, 31, 20, 89, 5, 78, 26, 67, 0, 1, 126, 16, 69, 31, 186, 17 };
 
 // this structure defines all the variables and events of your control interface
 struct
@@ -88,13 +60,40 @@ struct
   int8_t speed;    // from 0 to 100
   uint8_t dir;     // =1 if switch ON and =0 if OFF
   uint8_t toggle;  // =1 if state is ON, else =0
-  uint8_t toggle1; // =1 if state is ON, else =0
+  uint8_t led_id;  // from 0 to 5
 
   // output variables
-  char string[17]; // string UTF8 end zero
+  char string[17];  // string UTF8 end zero
 
   // other variable
-  uint8_t connect_flag; // =1 if wire connected, else =0
+  uint8_t connect_flag;  // =1 if wire connected, else =0
+
+} RemoteXY;
+
+#else
+
+uint8_t RemoteXY_CONF[] =  // 85 bytes
+  { 255, 4, 0, 17, 0, 78, 0, 19, 0, 0, 0, 0, 24, 1, 126, 200, 1, 1, 5, 0,
+    4, 78, 29, 19, 100, 0, 79, 111, 2, 36, 143, 55, 21, 1, 172, 79, 16, 31, 62, 0,
+    60, 0, 10, 24, 92, 28, 28, 48, 78, 26, 31, 79, 78, 0, 31, 79, 70, 70, 0, 10,
+    24, 45, 28, 28, 48, 78, 26, 31, 79, 78, 0, 31, 79, 70, 70, 0, 67, 0, 10, 126,
+    15, 69, 31, 186, 17 };
+
+// this structure defines all the variables and events of your control interface
+struct
+{
+
+  // input variables
+  int8_t speed;     // from 0 to 100
+  uint8_t dir;      // =1 if switch ON and =0 if OFF
+  uint8_t toggle;   // =1 if state is ON, else =0
+  uint8_t toggle1;  // =1 if state is ON, else =0
+
+  // output variables
+  char string[17];  // string UTF8 end zero
+
+  // other variable
+  uint8_t connect_flag;  // =1 if wire connected, else =0
 
 } RemoteXY;
 
@@ -104,120 +103,236 @@ struct
 //           END RemoteXY include          //
 /////////////////////////////////////////////
 
-int16_t fade(uint8_t pinNumber, bool ledState, int16_t ledBrightness, int16_t maxPwmDuty)
-{
+int16_t fade(uint8_t pinNumber, bool ledState, int16_t ledBrightness, int16_t maxPwmDuty) {
   int16_t prevBrightness = ledBrightness;
   int16_t brightnessVariance = maxPwmDuty / 250;
   brightnessVariance = constrain(brightnessVariance, 1, maxPwmDuty);
 
-  if (ledState == 1 && ledBrightness < maxPwmDuty)
-  {                                                     // if led is on and brightness is less than max
-    ledBrightness = ledBrightness + brightnessVariance; // increase brightness by 1
+  if (ledState == 1 && ledBrightness < maxPwmDuty) {         // if led is on and brightness is less than max
+    ledBrightness = ledBrightness + brightnessVariance;      // increase brightness by 1
+  } else if (ledState == 0 && ledBrightness > 0) {           // if led is off and brightness is greater than 0
+    ledBrightness = ledBrightness - brightnessVariance * 2;  // decrease brightness by 1
   }
-  else if (ledState == 0 && ledBrightness > 0)
-  {                                                         // if led is off and brightness is greater than 0
-    ledBrightness = ledBrightness - brightnessVariance * 2; // decrease brightness by 1
-  }
-  ledBrightness = constrain(ledBrightness, 0, maxPwmDuty); // limit brightness between 0 and 255
+  ledBrightness = constrain(ledBrightness, 0, maxPwmDuty);  // limit brightness between 0 and 255
 
 #ifdef FREE_UP_LEDC
-  if (ledBrightness >= maxPwmDuty || ledBrightness <= 0)
-  { // if brightness did not change
-    if (prevBrightness != ledBrightness)
-    {
-      ledcDetach(pinNumber); // this frees up a ledc channel
+  if (ledBrightness >= maxPwmDuty || ledBrightness <= 0) {  // if brightness did not change
+    if (prevBrightness != ledBrightness) {
+      ledcDetach(pinNumber);  // this frees up a ledc channel
       pinMode(pinNumber, OUTPUT);
       digitalWrite(pinNumber, ledState);
     }
     digitalWrite(pinNumber, ledState);
-  }
-  else
-  {
-    ledcWrite(pinNumber, ledBrightness); // write brightness to the led pin
+  } else {
+    ledcWrite(pinNumber, ledBrightness);  // write brightness to the led pin
   }
 #else
-ledcWrite(pinNumber, ledBrightness); // write brightness to the led pin
+  ledcWrite(pinNumber, ledBrightness);  // write brightness to the led pin
 #endif
 
-  return ledBrightness; // return the new brightness value
+  return ledBrightness;  // return the new brightness value
 }
 
-int16_t alternateFade(uint8_t pinNumber1, uint8_t pinNumber2, bool ledState, int16_t ledBrightness, int16_t maxPwmDuty)
-{
-  static int16_t alternateBrightness = maxPwmDuty / 50; // direction, strength of brightness change
-  static bool startUpState = 0;                         // keep track of first cycle
+int16_t alternateFade(uint8_t pinNumber1, uint8_t pinNumber2, bool ledState, int16_t ledBrightness, int16_t maxPwmDuty) {
+  static int16_t alternateBrightness = maxPwmDuty / 50;  // direction, strength of brightness change
+  static bool startUpState = 0;                          // keep track of first cycle
   int16_t minPwnDuty = maxPwmDuty / 50;
   minPwnDuty = constrain(minPwnDuty, 0, maxPwmDuty);
 
-  if (ledState == 1)
-  {
-    if (ledBrightness >= maxPwmDuty)
-    {
+  if (ledState == 1) {
+    if (ledBrightness >= maxPwmDuty) {
       startUpState = 1;
       alternateBrightness = alternateBrightness * -1;
     }
-    if (ledBrightness <= minPwnDuty)
-    {
+    if (ledBrightness <= minPwnDuty) {
       alternateBrightness = alternateBrightness * -1;
     }
     ledBrightness = ledBrightness + alternateBrightness;
-    ledBrightness = constrain(ledBrightness, minPwnDuty, maxPwmDuty); // limit pwm duty range
-    ledcWrite(pinNumber1, ledBrightness);          // write brightness to pin 1
-    if (startUpState == 1)
-    {
-      ledcWrite(pinNumber2, maxPwmDuty - ledBrightness); // write inverse brightness to pin 2}
+    ledBrightness = constrain(ledBrightness, minPwnDuty, maxPwmDuty);  // limit pwm duty range
+    ledcWrite(pinNumber1, ledBrightness);                              // write brightness to pin 1
+    if (startUpState == 1) {
+      ledcWrite(pinNumber2, maxPwmDuty - ledBrightness);  // write inverse brightness to pin 2}
     }
-  }
-  else
-  {
+  } else {
     startUpState = 0;
 #ifdef FREE_UP_LEDC
-    ledcDetach(pinNumber1);      // detach pin 1 from Pwm
-    ledcDetach(pinNumber2);      // detach pin 2 from Pwm
-    pinMode(pinNumber1, OUTPUT); // set pin 1 to output
-    pinMode(pinNumber2, OUTPUT); // set pin 2 to output
-    digitalWrite(pinNumber1, 0); // turn off pin 1
-    digitalWrite(pinNumber2, 0); // turn off pin 2
+    ledcDetach(pinNumber1);       // detach pin 1 from Pwm
+    ledcDetach(pinNumber2);       // detach pin 2 from Pwm
+    pinMode(pinNumber1, OUTPUT);  // set pin 1 to output
+    pinMode(pinNumber2, OUTPUT);  // set pin 2 to output
+    digitalWrite(pinNumber1, 0);  // turn off pin 1
+    digitalWrite(pinNumber2, 0);  // turn off pin 2
 #else
-ledcWrite(pinNumber1, 0); // write 0 to pin 1
-ledcWrite(pinNumber2, 0); // write 0 to pin 2
+    ledcWrite(pinNumber1, 0);  // write 0 to pin 1
+    ledcWrite(pinNumber2, 0);  // write 0 to pin 2
 #endif
   }
-  return ledBrightness; // return new brightness value
+  return ledBrightness;  // return new brightness value
 }
 
-void runMotor(uint8_t pwmPin1, uint8_t pwmPin2, int16_t speed, bool direction)
-{
+void runMotor(uint8_t pwmPin1, uint8_t pwmPin2, int16_t speed, bool direction) {
   uint16_t minPwmDuty = minPower * motorMaxPwm / 100;
 
-  if (speed > 0)
-  {
+  if (speed > 0) {
     speed = map(speed, 0, 100, minPwmDuty, motorMaxPwm);
     digitalWrite(DRV_EN, HIGH);
-    switch (direction)
-    {
-    case 0:
-      ledcWrite(pwmPin1, 0);
-      ledcWrite(pwmPin2, speed);
-      break;
-    case 1:
-      ledcWrite(pwmPin1, speed);
-      ledcWrite(pwmPin2, 0);
-      break;
+    switch (direction) {
+      case 0:
+        ledcWrite(pwmPin1, 0);
+        ledcWrite(pwmPin2, speed);
+        break;
+      case 1:
+        ledcWrite(pwmPin1, speed);
+        ledcWrite(pwmPin2, 0);
+        break;
     }
-  }
-  else
-  {
+  } else {
     digitalWrite(DRV_EN, LOW);
     ledcWrite(pwmPin1, 0);
     ledcWrite(pwmPin2, 0);
   }
 }
 
-void setup()
-{
+#ifdef EXTENDED_LED_CONTROL
+void printLEDtype() {
+  switch (RemoteXY.led_id) {
+    case 0:
+      sprintf(RemoteXY.string, "Head light");
+      break;
+    case 1:
+      sprintf(RemoteXY.string, "Tail light");
+      break;
+    case 2:
+      sprintf(RemoteXY.string, "Cab light");
+      break;
+    case 3:
+      sprintf(RemoteXY.string, "Walk light");
+      break;
+    case 4:
+      sprintf(RemoteXY.string, "Ditch light");
+      break;
+    default:
+      break;
+  }
+}
+COROUTINE(ledInput) {
+  COROUTINE_LOOP() {
+    static int8_t led_select = 0;
+    if (led_select != RemoteXY.led_id) {
+      led_select = RemoteXY.led_id;
+      RemoteXY.toggle = lightState[led_select];
+      printLEDtype();
+    }
+    lightState[led_select] = RemoteXY.toggle;
+
+    COROUTINE_DELAY(50);
+  }
+}
+
+#else
+COROUTINE(ledInput) {
+  COROUTINE_LOOP() {
+    if (lightState[HEADLIGHT] != RemoteXY.toggle1) {
+      lightState[HEADLIGHT] = RemoteXY.toggle1;
+      if (RemoteXY.toggle1 == 1)
+        sprintf(RemoteXY.string, "Head light: ON");
+      if (RemoteXY.toggle1 == 0)
+        sprintf(RemoteXY.string, "Head light: OFF");
+    }
+    if (lightState[TAILLIGHT] != RemoteXY.toggle) {
+      lightState[TAILLIGHT] = RemoteXY.toggle;
+      if (RemoteXY.toggle == 1)
+        sprintf(RemoteXY.string, "Tail light: ON");
+      if (RemoteXY.toggle == 0)
+        sprintf(RemoteXY.string, "Tail light: OFF");
+    }
+
+    COROUTINE_DELAY(50);
+  }
+}
+#endif
+
+COROUTINE(ledOutput) {
+  COROUTINE_LOOP() {
+    headlightBrightness = fade(L1, lightState[HEADLIGHT], headlightBrightness, headlightMaxPower);
+    taillightBrightness = fade(L2, lightState[TAILLIGHT], taillightBrightness, taillightMaxPower);
+    cablightBrightness = fade(L3, lightState[CABLIGHT], cablightBrightness, cablightMaxPower);
+    walklightBrightness = fade(L4, lightState[WALKLIGHT], walklightBrightness, walklightMaxPower);
+    ditchlightBrightness = alternateFade(L5, L6, lightState[DITCHLIGHT], ditchlightBrightness, ditchlightMaxPower);
+    COROUTINE_DELAY(10);
+  }
+}
+
+COROUTINE(motorOutput) {
+  COROUTINE_LOOP() {
+    static bool dir = 0;
+    if (RemoteXY.dir != dir) {
+      dir = RemoteXY.dir;
+      RemoteXY.speed = 0;
+      if (dir == 0)
+        sprintf(RemoteXY.string, "Reverse");
+      if (dir == 1)
+        sprintf(RemoteXY.string, "Forward");
+    }
+
+#ifndef INVERT_MOTOR_A
+    runMotor(DRV_MA1, DRV_MA2, RemoteXY.speed, RemoteXY.dir);
+#else
+    runMotor(DRV_MA2, DRV_MA1, RemoteXY.speed, RemoteXY.dir);
+#endif
+    COROUTINE_DELAY(10);
+  }
+}
+
+COROUTINE(batteryWarning) {
+  COROUTINE_BEGIN();
+  if (vBat < batteryCritical) {
+    sprintf(RemoteXY.string, "Critical: %.2fV", vBat);
+    COROUTINE_DELAY(2000);
+    sprintf(RemoteXY.string, "Motor disabled", vBat);
+  } else if (vBat < batteryLow) {
+    sprintf(RemoteXY.string, "Fuel Low: %.2fV", vBat);
+    COROUTINE_DELAY(2000);
+    sprintf(RemoteXY.string, "Recharge soon", vBat);
+  }
+  COROUTINE_END();
+}
+
+COROUTINE(health) {
+  COROUTINE_LOOP() {
+    static bool prevConnectflag = 0;
+    if (RemoteXY.connect_flag == 0) {
+
+      digitalWrite(DRV_EN, LOW);
+      RemoteXY.speed = 0;
+      RemoteXY.toggle = 0;
+    }
+
+    if (prevConnectflag != RemoteXY.connect_flag) {
+      prevConnectflag = RemoteXY.connect_flag;
+      if (RemoteXY.connect_flag) {
+        sprintf(RemoteXY.string, "RamBros 3D");
+        COROUTINE_DELAY(2000);
+        sprintf(RemoteXY.string, "Power: %dS %.1fV", cellCount, vBat);
+        COROUTINE_DELAY(3000);
+        sprintf(RemoteXY.string, "Dragon Railway");
+      }
+    }
+
+    vBat = analogRead(VSENS) * VSCALE / 1000.0;
+    if (vBat < batteryLow) {
+      batteryWarning.runCoroutine();
+    }
+    COROUTINE_DELAY(250);  //  Check health 4 times/second
+  }
+}
+
+
+
+void setup() {
+  delay(100);
   RemoteXY_Init();
-  RemoteXY.dir = 1; // Set initial direction to forward
+  RemoteXY.dir = 1;  // Set initial direction to forward
 
 // Power control - only for official boards
 #ifndef DIY_BOARD
@@ -249,48 +364,42 @@ void setup()
   cablightMaxPower = map(cablightMaxPower, 0, 100, 0, ledMaxPwm);
   walklightMaxPower = map(walklightMaxPower, 0, 100, 0, ledMaxPwm);
   ditchlightMaxPower = map(ditchlightMaxPower, 0, 100, 0, ledMaxPwm);
-  ledcAttachChannel(L1, LED_FREQ, LED_RES,2);
-  ledcAttachChannel(L2, LED_FREQ, LED_RES,3);
-  ledcAttachChannel(L3, LED_FREQ, LED_RES,4);
-  ledcAttachChannel(L4, LED_FREQ, LED_RES,5);
-  ledcAttachChannel(L5, LED_FREQ, LED_RES,6);
-  ledcAttachChannel(L6, LED_FREQ, LED_RES,7);
+  ledcAttachChannel(L1, LED_FREQ, LED_RES, 2);
+  ledcAttachChannel(L2, LED_FREQ, LED_RES, 3);
+  ledcAttachChannel(L3, LED_FREQ, LED_RES, 4);
+  ledcAttachChannel(L4, LED_FREQ, LED_RES, 5);
+  ledcAttachChannel(L5, LED_FREQ, LED_RES, 6);
+  ledcAttachChannel(L6, LED_FREQ, LED_RES, 7);
 #endif
 
 //  H bridge pins
 #ifndef INVERT_MOTOR_A
-  ledcAttachChannel(DRV_MA1, DRV_FREQ, DRV_RES,0); //  set ledc channel
-  ledcAttachChannel(DRV_MA2, DRV_FREQ, DRV_RES,1); //  set ledc channel
+  ledcAttachChannel(DRV_MA1, DRV_FREQ, DRV_RES, 0);  //  set ledc channel
+  ledcAttachChannel(DRV_MA2, DRV_FREQ, DRV_RES, 1);  //  set ledc channel
 #else
-  ledcAttachChannel(DRV_MA1, DRV_FREQ, DRV_RES,1); //  set ledc channel
-  ledcAttachChannel(DRV_MA2, DRV_FREQ, DRV_RES,0); //  set ledc channel
+  ledcAttachChannel(DRV_MA1, DRV_FREQ, DRV_RES, 1);  //  set ledc channel
+  ledcAttachChannel(DRV_MA2, DRV_FREQ, DRV_RES, 0);  //  set ledc channel
 #endif
 #ifdef DUAL_MOTOR_DRIVER
 #ifndef INVERT_MOTOR_B
-ledcAttachChannel(DRV_MB1, DRV_FREQ, DRV_RES,0); //  use same channel as motor 1
-ledcAttachChannel(DRV_MB2, DRV_FREQ, DRV_RES,1); //  use same channel as motor 1
+  ledcAttachChannel(DRV_MB1, DRV_FREQ, DRV_RES, 0);  //  use same channel as motor 1
+  ledcAttachChannel(DRV_MB2, DRV_FREQ, DRV_RES, 1);  //  use same channel as motor 1
 #else
-ledcAttachChannel(DRV_MB1, DRV_FREQ, DRV_RES,1); //  use same channel as motor 1
-ledcAttachChannel(DRV_MB2, DRV_FREQ, DRV_RES,0); //  use same channel as motor 1
+  ledcAttachChannel(DRV_MB1, DRV_FREQ, DRV_RES, 1);  //  use same channel as motor 1
+  ledcAttachChannel(DRV_MB2, DRV_FREQ, DRV_RES, 0);  //  use same channel as motor 1
 #endif
 #endif
 
-  pinMode(DRV_EN, OUTPUT);   //  set enable pin as output
-  digitalWrite(DRV_EN, LOW); //  initialize driver disabled at startup
+  pinMode(DRV_EN, OUTPUT);    //  set enable pin as output
+  digitalWrite(DRV_EN, LOW);  //  initialize driver disabled at startup
 
-  if (cellCount == 0)
-  {
+  if (cellCount == 0) {
     vBat = analogRead(VSENS) * VSCALE / 1000.0;
-    if (vBat > (batteryCritical * 3.0))
-    {
+    if (vBat > (batteryCritical * 3.0)) {
       cellCount = 3;
-    }
-    else if (vBat > (batteryCritical * 2.0))
-    {
+    } else if (vBat > (batteryCritical * 2.0)) {
       cellCount = 2;
-    }
-    else if (vBat > (batteryCritical * 1.0))
-    {
+    } else if (vBat > (batteryCritical * 1.0)) {
       cellCount = 1;
     }
   }
@@ -304,170 +413,14 @@ ledcAttachChannel(DRV_MB2, DRV_FREQ, DRV_RES,0); //  use same channel as motor 1
   */
 
   CoroutineScheduler::setup();
+  delay(100);
 }
 
-#ifdef EXTENDED_LED_CONTROL
-void printLEDtype()
-{
-  switch (RemoteXY.led_id)
-  {
-  case 0:
-    sprintf(RemoteXY.string, "Head light");
-    break;
-  case 1:
-    sprintf(RemoteXY.string, "Tail light");
-    break;
-  case 2:
-    sprintf(RemoteXY.string, "Cab light");
-    break;
-  case 3:
-    sprintf(RemoteXY.string, "Walk light");
-    break;
-  case 4:
-    sprintf(RemoteXY.string, "Ditch light");
-    break;
-  default:
-    break;
-  }
-}
-COROUTINE(ledInput)
-{
-  COROUTINE_LOOP()
-  {
-    static int8_t led_select = 0;
-    if (led_select != RemoteXY.led_id)
-    {
-      led_select = RemoteXY.led_id;
-      RemoteXY.toggle = lightState[led_select];
-      printLEDtype();
-    }
-    lightState[led_select] = RemoteXY.toggle;
-
-    COROUTINE_DELAY(50);
-  }
-}
-
-#else
-COROUTINE(ledInput)
-{
-  COROUTINE_LOOP()
-  {
-    if (lightState[HEADLIGHT] != RemoteXY.toggle1)
-    {
-      lightState[HEADLIGHT] = RemoteXY.toggle1;
-      if (RemoteXY.toggle1 == 1)
-        sprintf(RemoteXY.string, "Head light: ON");
-      if (RemoteXY.toggle1 == 0)
-        sprintf(RemoteXY.string, "Head light: OFF");
-    }
-    if (lightState[TAILLIGHT] != RemoteXY.toggle)
-    {
-      lightState[TAILLIGHT] = RemoteXY.toggle;
-      if (RemoteXY.toggle == 1)
-        sprintf(RemoteXY.string, "Tail light: ON");
-      if (RemoteXY.toggle == 0)
-        sprintf(RemoteXY.string, "Tail light: OFF");
-    }
-
-    COROUTINE_DELAY(50);
-  }
-}
-#endif
-
-COROUTINE(ledOutput)
-{
-  COROUTINE_LOOP()
-  {
-    headlightBrightness = fade(L1, lightState[HEADLIGHT], headlightBrightness, headlightMaxPower);
-    taillightBrightness = fade(L2, lightState[TAILLIGHT], taillightBrightness, taillightMaxPower);
-    cablightBrightness = fade(L3, lightState[CABLIGHT], cablightBrightness, cablightMaxPower);
-    walklightBrightness = fade(L4, lightState[WALKLIGHT], walklightBrightness, walklightMaxPower);
-    ditchlightBrightness = alternateFade(L5, L6, lightState[DITCHLIGHT], ditchlightBrightness, ditchlightMaxPower);
-    COROUTINE_DELAY(10);
-  }
-}
-
-COROUTINE(motorOutput)
-{
-  COROUTINE_LOOP()
-  {
-    static bool dir = 0;
-    if (RemoteXY.dir != dir)
-    {
-      dir = RemoteXY.dir;
-      RemoteXY.speed = 0;
-      if (dir == 0)
-        sprintf(RemoteXY.string, "Reverse");
-      if (dir == 1)
-        sprintf(RemoteXY.string, "Forward");
-    }
-
-#ifndef INVERT_MOTOR_A
-    runMotor(DRV_MA1, DRV_MA2, RemoteXY.speed, RemoteXY.dir);
-#else
-    runMotor(DRV_MA2, DRV_MA1, RemoteXY.speed, RemoteXY.dir);
-#endif
-    COROUTINE_DELAY(10);
-  }
-}
-
-COROUTINE(batteryWarning)
-{
-  COROUTINE_BEGIN();
-  if (vBat < batteryCritical)
-  {
-    sprintf(RemoteXY.string, "Critical: %.2fV", vBat);
-    COROUTINE_DELAY(2000);
-    sprintf(RemoteXY.string, "Motor disabled", vBat);
-  }
-  else if (vBat < batteryLow)
-  {
-    sprintf(RemoteXY.string, "Fuel Low: %.2fV", vBat);
-    COROUTINE_DELAY(2000);
-    sprintf(RemoteXY.string, "Recharge soon", vBat);
-  }
-  COROUTINE_END();
-}
-
-COROUTINE(health)
-{
-  COROUTINE_LOOP()
-  {
-    static bool prevConnectflag = 0;
-    if (RemoteXY.connect_flag == 0)
-    {
-
-      digitalWrite(DRV_EN, LOW);
-      RemoteXY.speed = 0;
-      RemoteXY.toggle = 0;
-    }
-
-    if (prevConnectflag != RemoteXY.connect_flag)
-    {
-      prevConnectflag = RemoteXY.connect_flag;
-      if (RemoteXY.connect_flag)
-      {
-        sprintf(RemoteXY.string, "RamBros 3D");
-        COROUTINE_DELAY(2000);
-        sprintf(RemoteXY.string, "Power: %dS %.1fV", cellCount, vBat);
-        COROUTINE_DELAY(3000);
-        sprintf(RemoteXY.string, "Dragon Railway");
-      }
-    }
-
-    vBat = analogRead(VSENS) * VSCALE / 1000.0;
-    if (vBat < batteryLow)
-    {
-      batteryWarning.runCoroutine();
-    }
-    COROUTINE_DELAY(250); //  Check health 4 times/second
-  }
-}
-
-void loop()
-{
+void loop() {
   RemoteXY_Handler();
 
   CoroutineScheduler::loop();
   // fully nonblocking loop
+
+  delay(1);
 }
