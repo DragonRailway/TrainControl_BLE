@@ -4,7 +4,7 @@
 #define REMOTEXY_ACCESS_PASSWORD "1234"              //  Bluetooth Access Password
 
 // Uncomment this line if your model has more than 2 leds
-// #define EXTENDED_LED_CONTROL
+#define EXTENDED_LED_CONTROL
 
 // Uncomment this line if you use more than 6 leds
 // #define FREE_UP_LEDC
