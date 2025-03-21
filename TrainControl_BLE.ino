@@ -328,17 +328,10 @@ COROUTINE(health) {
 }
 
 
-
 void setup() {
   delay(100);
   RemoteXY_Init();
   RemoteXY.dir = 1;  // Set initial direction to forward
-
-// Power control - only for official boards
-#ifndef DIY_BOARD
-  pinMode(PWR_EN, OUTPUT);
-  digitalWrite(PWR_EN, HIGH);
-#endif
 
   ledMaxPwm = (1 << LED_RES) - 1;
   motorMaxPwm = (1 << DRV_RES) - 1;
@@ -414,6 +407,12 @@ void setup() {
 
   CoroutineScheduler::setup();
   delay(100);
+
+// Power control - only for official boards
+#ifndef DIY_BOARD
+  pinMode(PWR_EN, OUTPUT);
+  digitalWrite(PWR_EN, HIGH);
+#endif
 }
 
 void loop() {
