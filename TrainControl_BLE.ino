@@ -15,6 +15,8 @@ using namespace ace_routine;
 // Set the pins for your DIY board in this file
 #include <custom_pins.h>
 
+// #define BEMF_DEBUG
+
 // Variables to keep track of led brightness
 int16_t headlightBrightness = 0;
 int16_t taillightBrightness = 0;
@@ -265,32 +267,35 @@ COROUTINE(ledOutput) {
   }
 }
 
-/*
+#ifdef BEMF_DEBUG
 int bemf_speed1 = 0;
 int bemf_speed2 = 0;
 int bemf_speed3 = 0;
-int bemf_speed4 = 0;
+int bemf_speed4 = 2000;
 
 COROUTINE(motor_speed_read) {
   COROUTINE_LOOP() {
     digitalWrite(DRV_EN, LOW);
-    COROUTINE_DELAY(25);
-    bemf_speed1 = analogRead(DRV_BEMF);
-    COROUTINE_DELAY(25);
+    COROUTINE_DELAY(1);
     bemf_speed2 = analogRead(DRV_BEMF);
-    COROUTINE_DELAY(25);
+    if (bemf_speed2 < 1500) bemf_speed1 = bemf_speed2;
+    COROUTINE_DELAY(1);
+    /*
+    bemf_speed2 = analogRead(DRV_BEMF);
+    COROUTINE_DELAY(1);
     bemf_speed3 = analogRead(DRV_BEMF);
-    COROUTINE_DELAY(25);
+    COROUTINE_DELAY(1);
     bemf_speed4 = analogRead(DRV_BEMF);
-
+    COROUTINE_DELAY(1);
+    */
     digitalWrite(DRV_EN, HIGH);
-    COROUTINE_DELAY(500);
+    COROUTINE_DELAY(100);
   }
 }
 
 COROUTINE(motor_speed_write) {
   COROUTINE_LOOP() {
-    COROUTINE_DELAY(500);
+    COROUTINE_DELAY(100);
     Serial.print(bemf_speed1);
     Serial.print("\t");
     Serial.print(bemf_speed2);
@@ -301,7 +306,7 @@ COROUTINE(motor_speed_write) {
     Serial.print("\n");
   }
 }
-*/
+#endif
 
 COROUTINE(motorOutput) {
   COROUTINE_LOOP() {
