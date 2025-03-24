@@ -193,6 +193,7 @@ void runMotor(uint8_t pwmPin1, uint8_t pwmPin2, int16_t speed, bool direction) {
   }
 }
 
+//------------------------------------------------------------------------------------------------------------------------
 #ifdef EXTENDED_LED_CONTROL
 void printLEDtype() {
   switch (RemoteXY.led_id) {
@@ -252,6 +253,7 @@ COROUTINE(ledInput) {
 }
 #endif
 
+//------------------------------------------------------------------------------------------------------------------------
 COROUTINE(ledOutput) {
   COROUTINE_LOOP() {
     headlightBrightness = fade(L1, lightState[HEADLIGHT], headlightBrightness, headlightMaxPower);
@@ -262,6 +264,44 @@ COROUTINE(ledOutput) {
     COROUTINE_DELAY(10);
   }
 }
+
+/*
+int bemf_speed1 = 0;
+int bemf_speed2 = 0;
+int bemf_speed3 = 0;
+int bemf_speed4 = 0;
+
+COROUTINE(motor_speed_read) {
+  COROUTINE_LOOP() {
+    digitalWrite(DRV_EN, LOW);
+    COROUTINE_DELAY(25);
+    bemf_speed1 = analogRead(DRV_BEMF);
+    COROUTINE_DELAY(25);
+    bemf_speed2 = analogRead(DRV_BEMF);
+    COROUTINE_DELAY(25);
+    bemf_speed3 = analogRead(DRV_BEMF);
+    COROUTINE_DELAY(25);
+    bemf_speed4 = analogRead(DRV_BEMF);
+
+    digitalWrite(DRV_EN, HIGH);
+    COROUTINE_DELAY(500);
+  }
+}
+
+COROUTINE(motor_speed_write) {
+  COROUTINE_LOOP() {
+    COROUTINE_DELAY(500);
+    Serial.print(bemf_speed1);
+    Serial.print("\t");
+    Serial.print(bemf_speed2);
+    Serial.print("\t");
+    Serial.print(bemf_speed3);
+    Serial.print("\t");
+    Serial.print(bemf_speed4);
+    Serial.print("\n");
+  }
+}
+*/
 
 COROUTINE(motorOutput) {
   COROUTINE_LOOP() {
@@ -283,7 +323,7 @@ COROUTINE(motorOutput) {
     COROUTINE_DELAY(10);
   }
 }
-
+//------------------------------------------------------------------------------------------------------------------------
 COROUTINE(batteryWarning) {
   COROUTINE_BEGIN();
   if (vBat < batteryCritical) {
@@ -327,7 +367,7 @@ COROUTINE(health) {
   }
 }
 
-
+//------------------------------------------------------------------------------------------------------------------------
 void setup() {
   delay(100);
   RemoteXY_Init();
@@ -413,6 +453,9 @@ void setup() {
   pinMode(PWR_EN, OUTPUT);
   digitalWrite(PWR_EN, HIGH);
 #endif
+
+  Serial.begin(115200);
+  Serial.println("Dragon Railway Train Control");
 }
 
 void loop() {
