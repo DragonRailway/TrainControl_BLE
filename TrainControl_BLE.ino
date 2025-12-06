@@ -177,7 +177,9 @@ void runMotor(uint8_t pwmPin1, uint8_t pwmPin2, int16_t speed, bool direction) {
 
   if (speed > 0) {
     speed = map(speed, 0, 100, minPwmDuty, motorMaxPwm);
+#ifdef DRV_EN
     digitalWrite(DRV_EN, HIGH);
+#endif
     switch (direction) {
       case 0:
         ledcWrite(pwmPin1, 0);
@@ -189,7 +191,9 @@ void runMotor(uint8_t pwmPin1, uint8_t pwmPin2, int16_t speed, bool direction) {
         break;
     }
   } else {
+#ifdef DRV_EN
     digitalWrite(DRV_EN, LOW);
+#endif
     ledcWrite(pwmPin1, 0);
     ledcWrite(pwmPin2, 0);
   }
@@ -273,6 +277,7 @@ int bemf_speed2 = 0;
 int bemf_speed3 = 0;
 int bemf_speed4 = 2000;
 
+#ifdef DRV_EN
 COROUTINE(motor_speed_read) {
   COROUTINE_LOOP() {
     digitalWrite(DRV_EN, LOW);
@@ -292,6 +297,7 @@ COROUTINE(motor_speed_read) {
     COROUTINE_DELAY(100);
   }
 }
+#endif
 
 COROUTINE(motor_speed_write) {
   COROUTINE_LOOP() {
@@ -325,6 +331,16 @@ COROUTINE(motorOutput) {
 #else
     runMotor(DRV_MA2, DRV_MA1, RemoteXY.speed, RemoteXY.dir);
 #endif
+
+
+#ifdef DRV_MB1
+#ifndef INVERT_MOTOR_B
+    runMotor(DRV_MB1, DRV_MB2, RemoteXY.speed, RemoteXY.dir);
+#else
+    runMotor(DRV_MB2, DRV_MB1, RemoteXY.speed, RemoteXY.dir);
+#endif
+#endif
+
     COROUTINE_DELAY(10);
   }
 }
@@ -348,7 +364,9 @@ COROUTINE(health) {
     static bool prevConnectflag = 0;
     if (RemoteXY.connect_flag == 0) {
 
+#ifdef DRV_EN
       digitalWrite(DRV_EN, LOW);
+#endif
       RemoteXY.speed = 0;
       RemoteXY.toggle = 0;
     }
@@ -418,7 +436,7 @@ void setup() {
   ledcAttachChannel(DRV_MA1, DRV_FREQ, DRV_RES, 1);  //  set ledc channel
   ledcAttachChannel(DRV_MA2, DRV_FREQ, DRV_RES, 0);  //  set ledc channel
 #endif
-#ifdef DUAL_MOTOR_DRIVER
+#ifdef DRV_MB1
 #ifndef INVERT_MOTOR_B
   ledcAttachChannel(DRV_MB1, DRV_FREQ, DRV_RES, 0);  //  use same channel as motor 1
   ledcAttachChannel(DRV_MB2, DRV_FREQ, DRV_RES, 1);  //  use same channel as motor 1
@@ -428,8 +446,10 @@ void setup() {
 #endif
 #endif
 
+#ifdef DRV_EN
   pinMode(DRV_EN, OUTPUT);    //  set enable pin as output
   digitalWrite(DRV_EN, LOW);  //  initialize driver disabled at startup
+#endif
 
   if (cellCount == 0) {
     vBat = analogRead(VSENS) * VSCALE / 1000.0;
